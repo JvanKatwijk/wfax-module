@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>fax_decoder</class>
+ <widget class="QWidget" name="fax_decoder">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>611</width>
+    <height>154</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>fax-decoder</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="connectButton">
+       <property name="text">
+        <string>connect</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="hostNameLabel">
+       <property name="text">
+        <string>127.0.0.1</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="portSelector">
+       <property name="maximum">
+        <number>1000000</number>
+       </property>
+       <property name="value">
+        <number>5454</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="connectLabel">
+       <property name="text">
+        <string>not connected</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QPushButton" name="presetButton">
+       <property name="text">
+        <string>presets</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="iocSelector">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;FAX mode, implies some settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Wefax576</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Wefax288</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="modeSelector">
+       <item>
+        <property name="text">
+         <string>FM</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>AM</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="phaseSelector">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Normal or inverse (i.e.back and white).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>phase</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>inverse</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="faxColorSelector">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Black and white or color.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>BW</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>GRAY</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>COLOR</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="saveFrequency">
+       <property name="text">
+        <string>save freq</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="correctButton">
+       <property name="text">
+        <string>correct</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="sampleCorrection"/>
+     </item>
+     <item>
+      <widget class="QComboBox" name="deviationSelector">
+       <item>
+        <property name="text">
+         <string>1900-400</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>1950-450</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>fax decoder</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="showState">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Current state of operation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Shape::Box</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="saveContinuousButton">
+       <property name="text">
+        <string>saveConinuous</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="saveSingleButton">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If saveSingle is &amp;quot;on&amp;quot;, the picture will automatically be saved when FAX_DONE&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>saveSingle</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="resetButton">
+       <property name="text">
+        <string>reset</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cheatButton">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pushing the &amp;quot;cheat&amp;quot; button when in Mode &amp;quot;APTSTART&amp;quot; will skip the syncing and switch to mode &amp;quot;SYNCED&amp;quot;. If in mode &amp;quot;SYNCED&amp;quot;, a swich is made to &amp;quot;FAX_DONE&amp;quot;.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>cheat</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLCDNumber" name="lineNumber">
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+       <property name="segmentStyle">
+        <enum>QLCDNumber::SegmentStyle::Flat</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="continueButton">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If a picture is read in, the software will wait in mode FAX_DONE. In that mode pushing the button will reset the software and set the mode to APTSTART&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>continue</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=wfax-module
+Exec=wgfax-module
+Icon=wfax-module
+Type=Application
+Categories=AudioVideo;
+Comment=A 3sweatherfax decoder using Qt and C++
+

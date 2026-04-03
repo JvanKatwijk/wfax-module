@@ -1,0 +1,181 @@
+#
+/*
+ *    Copyright (C) 2025
+ *    Jan van Katwijk (J.vanKatwijk@gmail.com)
+ *    Lazy Chair Computing
+ *
+ *    This file is part of the fax plugin for SDRconnect
+ *
+ *    fax plugin decoder is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    gax plugin decoder is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with fax plugin; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+//
+#include	<QDomDocument>
+#include	<QFile>
+#include	"preset-handler.h"
+#include	"radio.h"
+
+static
+
+float defaultFreqs [] = {
+	3885.0, 7880.0, 13882.5, 2618.5, 4610.0, 8040.0, 11086.5, 0
+};
+ 
+	presetHandler::presetHandler	(RadioInterface *radio,
+	                                         const QString  &fileName):
+	                                             QListView (nullptr) {
+	this	-> radio	= radio;
+	this	-> fileName	= fileName;
+	QDomDocument xmlBOM;
+//
+//	start with an empty list, waiting ...
+	presetList. clear ();
+	displayList. setStringList (presetList);
+	this	-> setModel (&displayList);
+	connect (this, &QListView::clicked,
+	         this, &presetHandler::selectElement);
+	connect (this, &QListView::doubleClicked,
+	         this, &presetHandler::removeElement);
+	connect (this, &presetHandler::handle_preset,
+	         radio, &RadioInterface::handle_preset);
+	QFile f (fileName);
+	if (f. open (QIODevice::ReadOnly)) {
+	   xmlBOM. setContent (&f);
+	   f. close ();
+	   QDomElement root	= xmlBOM. documentElement ();
+	   QDomElement component	= root. firstChild (). toElement ();
+	   while (!component. isNull ()) {
+	      if (component. tagName () == "PRESET_ELEMENT") {
+	         QString frequency =
+	                component. attribute ("FREQUENCY", "???");
+	         presetList. append (frequency);
+	      }
+	      component = component. nextSibling (). toElement ();
+	   }
+	}
+	else	// no filename found,
+	   for (int i = 0; defaultFreqs [i] != 0; i ++)
+	      presetList. append (QString::number (defaultFreqs [i]));
+	displayList. setStringList (presetList);
+	this	-> setModel (&displayList);
+	currentSelect	= 0;
+}
+
+	presetHandler::~presetHandler   () {
+}
+
+void	presetHandler::saveList		() {
+QDomDocument theScanList;
+QDomElement root = theScanList. createElement ("preset_db");
+
+	theScanList. appendChild (root);
+
+	for (int i = 0; i < presetList. size (); i ++) {
+           QString Freq = presetList. at (i);
+	   QDomElement presetListElement = theScanList.
+	                            createElement ("PRESET_ELEMENT");
+	   presetListElement. setAttribute ("FREQUENCY", Freq);
+	   root. appendChild (presetListElement);
+	}
+
+	QFile file (this -> fileName);
+	if (!file. open (QIODevice::WriteOnly | QIODevice::Text))
+	   return;
+
+	QTextStream stream (&file);
+	stream << theScanList. toString ();
+	file. close ();
+}
+
+static
+QStringList	sortList (QStringList &list) {
+float 	inpval [list. size ()];
+QStringList outList;
+bool ok;
+	for (int i = 0; i < list. size (); i ++) {
+	   float val = list. at (i). toFloat (&ok);
+	   if (ok)
+	      inpval [i] = val;
+	   else
+	      inpval [i] = 0;
+	}
+
+	std::sort (inpval, inpval + list. size ());
+	for (int i = 0; i < list. size (); i ++)
+	   outList << QString::number (inpval [i]);
+	return outList;
+}
+	
+void	presetHandler::addElement (int frequency) {
+const QString presetListElement = QString::number ((float)frequency / 1000.0f);
+
+	for (int i = 0; i < presetList. size (); i ++)
+	   if (presetList. at (i) == presetListElement)
+	      return;
+	presetList. append (presetListElement);
+//	presetList = sortList (presetList);
+	displayList. setStringList (presetList);
+	this	-> setModel (&displayList);
+}
+
+void	presetHandler::clearScanList () {
+	presetList. clear ();
+	displayList. setStringList (presetList);
+	this	-> setModel (&displayList);
+}
+//
+//	selecting a preset
+//
+void	presetHandler::selectElement (QModelIndex ind) {
+QString selectedElement = displayList. data (ind, Qt::DisplayRole). toString ();
+	handle_preset (selectedElement);
+	currentSelect = ind. row ();
+}
+
+void	presetHandler::removeElement (QModelIndex ind) {
+QString selectedElement = displayList. data (ind, Qt::DisplayRole). toString ();
+	for (int i = 0; i < presetList. size (); i ++) {
+	   if (presetList. at (i) == selectedElement) {
+	      presetList. erase (presetList. begin () + i);
+	      displayList. setStringList (presetList);
+	      this	-> setModel (&displayList);
+	      return;
+	   }
+	}
+}
+
+int	presetHandler::setFrequency	(int freq) {
+	for (int i = 0; i < presetList. size (); i ++) {
+	   if (presetList. at (i) == QString::number (freq)) {
+	      currentSelect = i;
+	      return freq * 1000;
+	   }
+	}
+	currentSelect = 0;
+	bool b;
+        int f = presetList. at (currentSelect). toInt (&b);
+        if (b)
+           return f * 1000;
+        return 0;
+}
+	
+int	presetHandler::nextFrequency	() {
+	currentSelect = (currentSelect + 1) % presetList. size ();
+	bool b;
+	int freq = presetList. at (currentSelect). toInt (&b);
+	if (b)
+	   return freq * 1000;
+	return 0;
+}
+

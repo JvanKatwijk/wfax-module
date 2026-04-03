@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+	<file>res/globstyle.qss</file>
+        <file>AUTHORS</file>
+        <file>COPYING</file>
+        <file>LICENSE</file>
+    </qresource>
+</RCC>
