@@ -82,6 +82,9 @@ In state FAX_DONE mode, the software will wait until the user takes action.
  * touching the ""continue** button instructs the software to switch over to
 the waiting state APTSTART.
 
+If the button **saveContinuous" is set, it is assumed that - after a picture is decoded, the picture will be stored in a picturefile, and the state is set to
+**APTSTART** for the next round.
+
 The **cheat** button:
  * if in state APTSTART the software switches to state SYNCED and decodes
 data. Of course, lines most likely do not start at the beginning of the picture; * if in state SYNCED the software switches to state FAX_DONE.

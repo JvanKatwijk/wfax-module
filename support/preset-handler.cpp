@@ -29,7 +29,7 @@
 static
 
 float defaultFreqs [] = {
-	3885.0, 7880.0, 13882.5, 2618.5, 4610.0, 8040.0, 11086.5, 0
+	3855.0, 7880.0, 13882.5, 2618.5, 4610.0, 8040.0, 11086.5, 0
 };
  
 	presetHandler::presetHandler	(RadioInterface *radio,
