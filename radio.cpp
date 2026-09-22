@@ -90,7 +90,10 @@ float	clamp (float X, float Min, float Max) {
 	                                                   -2000,
 	                                                   +2000,
 	                                                   INRATE),
-	                                   theDecimator (INRATE / WORKING_RATE),
+	                                   theDecimator (OUTRATE / WORKING_RATE,
+	                                                 2 * OUTRATE / WORKING_RATE,
+	                                                 2000,
+	                                                 OUTRATE),
 	                                   localMixer (WORKING_RATE),
 	                                   faxLowPass (FILTER_DEFAULT,
 	                                                400, WORKING_RATE),
@@ -100,7 +103,7 @@ float	clamp (float X, float Min, float Max) {
 	setupUi (this);
 	show ();
 	connect (this, &superFrame::frameClosed,
-	         this, &RadioInterface::onDisconnect);
+	         this, &RadioInterface::handle_quit);
 	running. store (false);
 
 	setWindowTitle ("fax control");
@@ -128,6 +131,25 @@ float	clamp (float X, float Min, float Max) {
 	         this, &RadioInterface::doConnect);
 }
 
+	RadioInterface::~RadioInterface () {	
+	running.store (false);
+
+	if (inputHandler != nullptr) {
+           disconnect (inputHandler, &messageHandler::dataAvailable,
+                       this, &RadioInterface::sampleHandler);
+           delete  inputHandler;
+        }
+        hide    ();
+        if (theFax. theImage != nullptr) {
+	   faxContainer. hide ();
+           delete theFax. theImage;
+	}
+        theFax. theImage        = nullptr;
+        faxContainer. hide      ();
+        faxPresets. hide        ();
+        faxPresets. saveList    ();
+}
+
 void	RadioInterface::doConnect	() {
 	running. store (false);
 	inputHandler		= new messageHandler (&inputBuffer,
@@ -152,8 +174,10 @@ void	RadioInterface::handle_connection_failed () {
 	            this, &RadioInterface::handle_connection_failed);
 	disconnect (inputHandler, &messageHandler::connection_succeeded,
 	            this, &RadioInterface::handle_connection_succeeded);
-	if (inputHandler != nullptr)
+	if (inputHandler != nullptr) {
 	   delete inputHandler;
+	   inputHandler = nullptr;
+	}
 }
 
 void	RadioInterface::handle_connection_succeeded () {
@@ -182,6 +206,8 @@ void	RadioInterface::handle_connection_succeeded () {
 	         this, &RadioInterface::handle_presetButton);
 	connect (saveFrequency, &QPushButton::clicked,
 	         this, &RadioInterface::handle_saveFrequency);
+	connect (inputHandler, &messageHandler::set_disconnect,
+	         this, &RadioInterface::set_disconnect);
 
 	inputHandler	-> setVFOFrequency (7880000);
 //	set the defaults
@@ -195,9 +221,6 @@ void	RadioInterface::handle_connection_succeeded () {
 //	and off we go
 }
 
-	RadioInterface::~RadioInterface () {	
-	running.store (false);
-}
 
 std::complex<float> buffer [WORKING_RATE / 10];
 void	RadioInterface::sampleHandler (int amount) {
@@ -249,7 +272,7 @@ void	RadioInterface::sampleHandler (int amount) {
 //	inputBuffer: samplerate inputRate
 	   std::complex<float> sample;
 	   inputBuffer. getDataFromBuffer (&sample, 1);
-	   if (!theDecimator. Pass (sample, &sample)) 
+	   if (!theDecimator. process (sample, sample)) 
 	      continue;
 
 	   buffer [teller] = sample;
@@ -1024,7 +1047,10 @@ void	RadioInterface::onDisconnect	() {
 	faxContainer. hide	();
 	faxPresets. hide	();
 	faxPresets. saveList	();
-//	close ();
+	close ();
+}
+
+void	RadioInterface::handle_quit	() {
 }
 
 void	RadioInterface::handle_preset	(const QString &freqText) {
@@ -1067,5 +1093,9 @@ void	RadioInterface::handle_saveSingle	() {
 	   saveContinuous = false;
 	   saveContinuousButton	-> setText ("saveSingle");
 	} 
+}
+
+void	RadioInterface::set_disconnect		() {
+	close ();
 }
 

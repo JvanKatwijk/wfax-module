@@ -6,8 +6,8 @@ QT      += widgets xml network
 QT      += core websockets
 
 
-CONFIG		+= console
-#CONFIG		-= console
+#CONFIG		+= console
+CONFIG		-= console
 TARGET		= wfax-module
 QMAKE_CXXFLAGS	+= -std=c++17 
 QMAKE_CFLAGS	+= -flto -ffast-math 
@@ -19,7 +19,7 @@ QMAKE_LFLAGS	+= -flto
 #QMAKE_CXXFLAGS	+= -fsanitize=address
 #QMAKE_CFLAGS	+= -fsanitize=address
 #QMAKE_LFLAGS	+= -fsanitize=address
-RC_ICONS	=  skimmer.ico
+RC_ICONS	= wfax-module.ico
 RESOURCES       += resources.qrc
 
 DEPENDPATH += .  \
@@ -44,11 +44,10 @@ HEADERS += ./radio.h \
 	   ./fax-scroller.h \
 	   ./support/ringbuffer.h \
 	   ./support/preset-handler.h \
-	   ./filters/decimator.h \
-	   ./filters/decimator-25.h \
 	   ./filters/fax-bandfilter.h \
 	   ./filters/lowpassfilter.h \
 	   ./filters/up-filter.h \
+	   ./filters/down-converter.h \
            ./input/message-handler.h \
            ./input/socket-handler.h \
 	   ./input/oscillator.h 
@@ -62,11 +61,10 @@ SOURCES += ./main.cpp \
 	   ./fax-image.cpp \
 	   ./fax-scroller.cpp \
 	   ./support/preset-handler.cpp \
-	   ./filters/decimator.cpp \
-	   ./filters/decimator-25.cpp \
 	   ./filters/fax-bandfilter.cpp \
            ./filters/lowpassfilter.cpp \
            ./filters/up-filter.cpp \
+           ./filters/down-converter.cpp \
            ./input/message-handler.cpp \
            ./input/socket-handler.cpp \
 	   ./input/oscillator.cpp 
@@ -100,6 +98,6 @@ isEmpty(GITHASHSTRING) {
     DEFINES += GITHASH=\\\"------\\\"
 }
 
-DESTDIR		= /d/systems/sdrconnect-plugins/wfax-plugin
+DESTDIR		= ./linux-bin
 LIBS    += -lwinmm
 }

@@ -27,7 +27,8 @@
 #include	"constants.h"
 #include	<mutex>
 #include	<atomic>
-//
+
+#include	"down-converter.h"
 #include	"super-frame.h"
 //	for the input handling
 #include	"message-handler.h"
@@ -37,7 +38,6 @@
 #include        "ringbuffer.h"
 #include        <stdint.h>
 #include	"fax-shifter.h"
-#include        "decimator-25.h"
 #include	"fax-bandfilter.h"
 #include	"lowpassfilter.h"
 #include	"fax-params.h"
@@ -99,8 +99,8 @@ private:
 	messageHandler		*inputHandler;
 	RingBuffer<Complex>     inputBuffer;
 	faxBandfilter	        passbandFilter;
-	decimator_25	        theDecimator;
 	faxShifter	        localMixer;
+	new_downConverter	theDecimator;
 	LowPassFIR		faxLowPass;
 	std::vector<int>	faxLineBuffer;	
 	faxScroller		faxContainer;
@@ -195,6 +195,8 @@ private:
 	} theFax;
 public slots:
 	void		doConnect		();
+	void		handle_quit		();
+	void		set_disconnect		();
 	void		handle_connection_failed	();
 	void		handle_connection_succeeded	();
 	void		onDisconnect		();

@@ -1,0 +1,28 @@
+
+	Weatherfax module
+
+The weatherfax plugin developed for SDRuno was rewritten for use with
+sdrConnect.  The module is therefore a separate program, using websockets to communicate with sdrconenct. For Linux a so-called Appimage is available, for Windows an installer.
+
+The module - when running - tries to synchronize with the start of a weatherfax transmission - using an improved synchronizer (a goertzel based implementation) to detect the start tone of the transmission. After detecting the start tone,
+the data for the fax is read and converted to picture on a separate window.
+
+The module is a separate program, using websockets to communicate with 
+sdrConnect.  Important: The module assumes an input samplerate of 2 M.
+
+For Linux a so-called Appimage is available, for Windows an installer and 
+obviously, sources are also available.
+
+Sources and a detailed description can be found at 
+
+	https://github.com/JvanKatwijk/wfax-module
+
+The AppImage and Windows installer can be downloaded from
+
+	https://github.com/JvanKatwijk/wfax-module/releases/tag/wfax-0.6
+
+
+J van Katwijk
+
+
+

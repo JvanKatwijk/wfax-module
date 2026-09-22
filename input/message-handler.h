@@ -4,20 +4,20 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
- *    This file is part of the ft8 module
+ *    This file is part of the wfax moduke
  *
- *    ft8 module is free software; you can redistribute it and/or modify
+ *    wfax module is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    ft8 module is distributed in the hope that it will be useful,
+ *    wfax module is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with ft8 module; if not, write to the Free Software
+ *    along with wfax module; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #pragma once
@@ -29,15 +29,14 @@
 #include	"constants.h"
 #include	"ringbuffer.h"
 #include	"socket-handler.h"
-#include	"decimator.h"
 #include	"oscillator.h"
+#include	"lowpassfilter.h"
 
-#define DEVICE_RATE     2000000
-#define LOWRATE		200000
-#define OUTRATE		192000
+#define DEVICE_RATE     125000
+#define OUTRATE		96000
 
 #define DIVIDER 1000
-#define CONV_SIZE       (LOWRATE / DIVIDER)
+#define CONV_SIZE       (DEVICE_RATE / DIVIDER)
 
 
 class messageHandler: public QObject {
@@ -49,9 +48,9 @@ public:
 	int	getVFOFrequency	();
 	void	tryConnect	(const QString &, int);
 private:
-	oscillator	theOscillator;
+	oscillator	theOscillator;	
+	LowPassFIR	theFilter;
 	RingBuffer<std::complex<int16_t>> _I_Buffer;
-	decimator	firstDecimator;
 	RingBuffer<std::complex<float>> *_O_Buffer;
 	socketHandler	*theSocket;
 	void		iqStreamEnable		(bool);
@@ -62,6 +61,7 @@ private:
 	bool		runMode;
 	int		vfo_frequency;
 	int		center_frequency;
+	void		set_samplerate		(uint32_t);
 	void		set_filterBW		(uint32_t);
 	std::complex<float>     convBuffer      [CONV_SIZE + 1];
 	int		convIndex;
@@ -73,6 +73,7 @@ private slots:
 	void	no_connection		();
 	void	binDataAvailable	();
 	void	dispatchMessage		(const QString &);
+	void	reportDisconnect	();
 //	for local use
 signals:
 	void	connection_succeeded	();
@@ -80,5 +81,6 @@ signals:
 	void	frequency_changed	(int);
 	void	signalPower		(double);
 	void	dataAvailable		(int);
+	void	set_disconnect		();
 };
 

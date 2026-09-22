@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=wfax-module
-Exec=wgfax-module
+Exec=wfax-module
 Icon=wfax-module
 Type=Application
 Categories=AudioVideo;
